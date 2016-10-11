@@ -3,7 +3,7 @@
 class Controller
 {
 public:
-	std::stack <Customer> s_customer; // This will hold all the customers in the program
+	std::vector <Customer> s_customer; // This will hold all the customers in the program
 
 public:
 	Controller();
@@ -22,7 +22,7 @@ public:
 	private methods
 	*/
 private:
-	std::stack<Account> loadAccts(std::fstream &myFile, int arr_length);
-	std::stack<Transaction> loadAcctsTransactions(std::fstream & myFile, int stackLength);
+	std::vector<Account> loadAccts(std::fstream &myFile, int arr_length);
+	std::vector<Transaction> loadAcctsTransactions(std::fstream & myFile, int stackLength);
 };
 

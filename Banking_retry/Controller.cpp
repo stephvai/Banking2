@@ -24,8 +24,8 @@ void Controller::saveCustomer()
 	fstream myFile("test.txt", fstream::out | fstream::trunc);
 
 	while (!s_customer.empty()) {
-		Customer c_temp = s_customer.top();
-		s_customer.pop();
+		Customer c_temp = s_customer.front();
+		s_customer.erase(s_customer.begin());
 		
 		myFile << c_temp.getUsername() << endl;
 		myFile << c_temp.getPassword() << endl;
@@ -41,14 +41,14 @@ void Controller::saveCustomerAccounts(std::fstream & myFile, Customer & customer
 	using namespace std;
 
 	// ptr to the stack
-	stack<Account> *s_acct = &customer.m_arr_acct;
+	vector<Account> *s_acct = &customer.m_arr_acct;
 
 	//write the size of the array to the file
 	myFile << s_acct->size() << endl;
 
 	while (!s_acct->empty()) {
-		Account a_temp = s_acct->top();
-		s_acct->pop();
+		Account a_temp = s_acct->front();
+		s_acct->erase(s_acct->begin());
 
 		myFile << static_cast<int> (a_temp.m_act_type) << endl;
 		myFile << a_temp.getActNum() << endl;
@@ -65,14 +65,14 @@ void Controller::saveCustomerTransactions(std::fstream & myFile, Account & accou
 	using namespace std;
 
 	//ptr to the stack 
-	stack<Transaction> *s_transaction = &account.m_transactions;
+	vector<Transaction> *s_transaction = &account.m_transactions;
 
 	//write the number of transactions
 	myFile << s_transaction->size() << endl;
 
 	while (!s_transaction->empty()) {
-		Transaction t_temp = s_transaction->top();
-		s_transaction->pop();
+		Transaction t_temp = s_transaction->front();
+		s_transaction->erase(s_transaction->begin());
 
 		myFile << t_temp.m_amount << endl;
 		myFile << static_cast<int> (t_temp.m_dr_cr) << endl;
@@ -104,7 +104,7 @@ void Controller::loadCustomers()
 	Permission permission;
 	int num_accounts;
 
-	std::stack<Account> stackAcct;
+	std::vector<Account> stackAcct;
 
 
 	fstream myFile("customer.txt", fstream::in);
@@ -122,20 +122,20 @@ void Controller::loadCustomers()
 		Customer customer(username, password, permission);
 		/* The next next function will load all the accounts for the customer*/
 		customer.m_arr_acct = loadAccts(myFile, num_accounts);
-		s_customer.push(customer); // push the customer
+		s_customer.push_back(customer); // push the customer
 	}
 
 	myFile.close();
 
 }
 
-std::stack<Account> Controller::loadAccts(std::fstream & myFile, int arr_length)
+std::vector<Account> Controller::loadAccts(std::fstream & myFile, int arr_length)
 {
 	int i_act_type;
 	Type act_type;
 	int act_num;
 	double balance;
-	std::stack<Account> s_accts;
+	std::vector<Account> s_accts;
 
 
 	for (int i = 0; i < arr_length; i++) {
@@ -155,14 +155,14 @@ std::stack<Account> Controller::loadAccts(std::fstream & myFile, int arr_length)
 		account.m_transactions = loadAcctsTransactions(myFile, arr_transactions_length);
 
 		//push it onto the stack
-		s_accts.push(account);
+		s_accts.push_back(account);
 	
 	}
 
 	return s_accts;
 }
 
-std::stack<Transaction> Controller::loadAcctsTransactions(std::fstream & myFile,  int stackLength)
+std::vector<Transaction> Controller::loadAcctsTransactions(std::fstream & myFile,  int stackLength)
 {
 	using namespace std;
 
@@ -175,7 +175,7 @@ std::stack<Transaction> Controller::loadAcctsTransactions(std::fstream & myFile,
 	Code code;
 	string date;
 
-	std::stack<Transaction> s_transactions;
+	std::vector<Transaction> s_transactions;
 
 	for (int i = 0; i < stackLength; i++) {
 		myFile >> amount;
@@ -190,7 +190,7 @@ std::stack<Transaction> Controller::loadAcctsTransactions(std::fstream & myFile,
 
 		//Create the object and push it onto the stack
 		Transaction transaction(amount, dr_cr, code, date);
-		s_transactions.push(transaction);
+		s_transactions.push_back(transaction);
 	}
 	return s_transactions;
 }

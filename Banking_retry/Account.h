@@ -12,7 +12,7 @@ class Account
 {
 public:
 
-	std::stack<Transaction> m_transactions;
+	std::vector<Transaction> m_transactions;
 
 	/*
 	Contructors
