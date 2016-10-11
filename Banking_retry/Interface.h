@@ -1,4 +1,7 @@
 #pragma once
+
+
+
 class Interface
 {
 public:
@@ -7,7 +10,8 @@ public:
 	/*
 	Methods
 	*/
-
+	void login(std::string &username, std::string &password);
+	//void loggedInScreen(Permission permission);
 
 };
 

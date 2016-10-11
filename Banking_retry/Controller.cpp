@@ -92,6 +92,25 @@ void Controller::saveCustomerTransactions(std::fstream & myFile, Account & accou
 
 
 
+bool Controller::login(Customer *ptr)
+{
+	using namespace std;
+	string input_password, input_username;
+
+	//call the login screen
+	UI.login(input_username, input_password);
+	
+
+	for (int i = 0; i < s_customer.size(); ++i) {
+		ptr = &s_customer[i];
+		if (ptr->getUsername().compare(input_username) == 0 && ptr->getPassword().compare(input_password) == 0) {
+			return true;
+		}
+	}
+	return false;
+
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //					These methods will load the customers in the stack
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -196,12 +215,27 @@ std::vector<Transaction> Controller::loadAcctsTransactions(std::fstream & myFile
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 
+int main() {
+	using namespace std;
+	Controller control;
+	control.loadCustomers();
 
-	int main() {
-		using namespace std;
-		Controller control;
-		control.loadCustomers();
-		control.saveCustomer();
-	}
+	bool loggedIn = false;
+
+	/*
+	Try to log in the program
+	*/
+
+	Customer *user=nullptr; // this is a pointer to the found user
+
+	do {
+		loggedIn = control.login(user);
+	} while (!loggedIn);
+
+	Permission p_status = user->getPermission();
+
+
+
+}
 
 
