@@ -1,5 +1,4 @@
 #include "Transactions.h"
-#include "Interface.h"
 #pragma once
 
 enum class Type
@@ -50,5 +49,6 @@ private:
 
 	void withdrawCHQ(double amount);
 	void withdrawSVG(double amount);
+	bool fee();
 };
 

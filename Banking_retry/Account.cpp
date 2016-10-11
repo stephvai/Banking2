@@ -19,7 +19,6 @@ Account::~Account()
 void Account::withdraw(double amount)
 {
 	using namespace std;
-	Interface UI;
 
 	switch (m_act_type)
 	{
@@ -30,7 +29,7 @@ void Account::withdraw(double amount)
 		withdrawSVG(amount);
 		break;
 	default:
-		UI.error();
+		cout << "something went wrong " << endl;
 		break;
 	}
 }
@@ -71,7 +70,6 @@ private helper methods
 
 void Account::withdrawCHQ(double amount)
 {
-	Interface UI;
 
 
 	if (getBalance() >= 1000 && (getBalance() - amount) < 1000) {
@@ -79,7 +77,7 @@ void Account::withdrawCHQ(double amount)
 		/*
 		Charge the fee and reccord the transaction
 		*/
-		bool charge = UI.fee();
+		bool charge = fee();
 
 			if (charge) {
 
@@ -106,14 +104,14 @@ void Account::withdrawCHQ(double amount)
 		return;
 	}
 	else {
-		UI.error();
+		std::cout << "Your balance must be greater than 0" << std::endl;
 	}
 
 }
 
 void Account::withdrawSVG(double amount)
 {
-	Interface UI;
+	using namespace std;
 
 	if (getBalance() - amount > 0) {
 		setBalance(getBalance() - amount);
@@ -122,6 +120,26 @@ void Account::withdrawSVG(double amount)
 		return;
 	}
 	else {
-		UI.error();
+		cout << "Your balance must be greater than 0" << endl;
 	}
+}
+
+
+bool Account::fee()
+{
+	using namespace std;
+	string answer;
+
+	do {
+		cout << "This transaction will charge a 2$ fee, do you want to continue? [Y/N]: ";
+		cin >> answer;
+	} while (answer != "Y" || answer != "N");
+
+	if (answer == "Y") {
+		return true;
+	}
+	else {
+		return false;
+	}
+
 }

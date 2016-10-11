@@ -7,8 +7,7 @@ public:
 	/*
 	Methods
 	*/
-	bool fee();
-	void error();
+
 
 };
 
