@@ -2,8 +2,19 @@
 #include "Account.h"
 
 
+/*
+
+*/
+int Account::s_accountNum;
+
 Account::Account()
 {
+}
+
+Account::Account(Type type):m_act_type{type}
+{
+	m_balance = 0;
+	m_act_num = ++s_accountNum;
 }
 
 Account::Account(int account_num, Type type, double balance):m_act_num{account_num}, m_act_type{type}, m_balance{balance}

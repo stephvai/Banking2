@@ -6,10 +6,14 @@ class Controller
 public:
 	std::vector <Customer> s_customer; // This will hold all the customers in the program
 	Interface UI;
+	std::string user_loggedIn;
 
 public:
 	Controller();
 	~Controller();
+
+	int whatUserIsLoggged(Permission permission);
+	void loggedInOption(Permission permission, int option, Customer * user);
 
 	void saveCustomer();
 private:

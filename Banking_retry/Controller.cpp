@@ -13,9 +13,56 @@ Controller::~Controller()
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////
-//					These methods will  the customers in the stack
-/////////////////////////////////////////////////////////////////////////////////////////
+int Controller::whatUserIsLoggged(Permission permission)
+{
+	using namespace std;
+
+
+	switch (permission)
+	{
+	case Permission::MANAGER:
+		return UI.managerLoggedInScreen();
+		break;
+	case Permission::CUSTOMER:
+		return UI.customerLoggedInScreen();
+		break;
+	case Permission::MAINTENANCE:
+		return UI.maintenanceLoggedInScreen();
+		break;
+	default:
+		cout << "Error : no permissions are set for this username" << endl;
+		return 100;
+		break;
+	}
+}
+
+void Controller::loggedInOption(Permission permission, int option, Customer *user)
+{
+
+	if (permission == Permission::CUSTOMER) {
+		std::string accountType;
+		switch (option)
+		{
+		case 1: 
+			accountType = UI.customerOpenAccount();
+			if (accountType == "C") {
+				user->openChequing();
+			}else{
+				user->openSavings();
+			}
+			break;
+		case 2:
+
+		case 3:
+		case 4:
+		default:
+			break;
+		}
+
+
+	}
+
+}
 
 void Controller::saveCustomer()
 {
@@ -104,6 +151,7 @@ bool Controller::login(Customer *ptr)
 	for (int i = 0; i < s_customer.size(); ++i) {
 		ptr = &s_customer[i];
 		if (ptr->getUsername().compare(input_username) == 0 && ptr->getPassword().compare(input_password) == 0) {
+			user_loggedIn = input_username; // store the person who is logged in
 			return true;
 		}
 	}
@@ -215,6 +263,8 @@ std::vector<Transaction> Controller::loadAcctsTransactions(std::fstream & myFile
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 
+
+
 int main() {
 	using namespace std;
 	Controller control;
@@ -233,7 +283,9 @@ int main() {
 	} while (!loggedIn);
 
 	Permission p_status = user->getPermission();
+	int option = control.whatUserIsLoggged(p_status);
 
+	
 
 
 }

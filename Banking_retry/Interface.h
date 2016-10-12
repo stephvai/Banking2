@@ -1,3 +1,4 @@
+#include "Permission.h"
 #pragma once
 
 
@@ -11,7 +12,10 @@ public:
 	Methods
 	*/
 	void login(std::string &username, std::string &password);
-	//void loggedInScreen(Permission permission);
+	int customerLoggedInScreen();
+	std::string customerOpenAccount();
 
+	int managerLoggedInScreen();
+	int maintenanceLoggedInScreen();
 };
 

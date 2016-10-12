@@ -17,6 +17,7 @@ public:
 	Contructors
 	*/
 	Account();
+	Account(Type type);
 	Account(int, Type, double);
 	~Account();
 	/*
@@ -41,6 +42,7 @@ public:
 private:
 	int m_act_num;
 	double m_balance;
+	static int s_accountNum;
 
 
 	/*
