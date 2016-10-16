@@ -10,7 +10,8 @@ enum class Code
 {
 	FEE,
 	WITHDRAW,
-	DEPOSIT
+	DEPOSIT,
+	TRANSFER
 };
 
 class Transaction

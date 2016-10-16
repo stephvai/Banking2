@@ -52,9 +52,10 @@ void Account::deposit(double amount)
 	setBalance(getBalance() + amount);
 }
 
-void Account::transfer(double amount, int act_num)
+void Account::transfer(Account *&otherAct, double amount)
 {
-
+	withdraw(amount);
+	otherAct->deposit(amount);
 }
 
 double Account::getBalance()
@@ -83,7 +84,7 @@ void Account::withdrawCHQ(double amount)
 {
 
 
-	if (getBalance() >= 1000 && (getBalance() - amount) < 1000) {
+	if (getBalance() >= 1000 && (getBalance() - amount) < 1000 && (getBalance()-amount) > 0) {
 		
 		/*
 		Charge the fee and reccord the transaction
@@ -144,7 +145,7 @@ bool Account::fee()
 	do {
 		cout << "This transaction will charge a 2$ fee, do you want to continue? [Y/N]: ";
 		cin >> answer;
-	} while (answer != "Y" || answer != "N");
+	} while (answer != "Y" && answer != "N");
 
 	if (answer == "Y") {
 		return true;

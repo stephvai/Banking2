@@ -25,7 +25,7 @@ public:
 	*/
 	void withdraw(double amount);
 	void deposit(double amount);
-	void transfer(double amount, int act_num );
+	void transfer(Account *& otherAct, double amount);
 
 	/*
 	Getter / Setter

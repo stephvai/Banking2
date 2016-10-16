@@ -1,6 +1,9 @@
+super
+power
+0
 joe
 hero
-0
+1
 1
 0
 500

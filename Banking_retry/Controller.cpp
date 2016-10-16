@@ -13,56 +13,229 @@ Controller::~Controller()
 
 
 
-int Controller::whatUserIsLoggged(Permission permission)
+
+
+void Controller::openAccount() {
+	using namespace std;
+	string option = UI.customerOpenAccount();
+
+	if (option == "C") {
+		workingOn->openChequing();
+	}
+	else if (option == "S") {
+		workingOn->openSavings();
+	}
+
+	UI.backToLogin();
+	whatUItoDisplay();
+
+}
+
+void Controller::whatUItoDisplay()
 {
 	using namespace std;
 
 
-	switch (permission)
+	switch (user->getPermission())
 	{
 	case Permission::MANAGER:
-		return UI.managerLoggedInScreen();
+		return managerLoggedInScreen();
 		break;
 	case Permission::CUSTOMER:
-		return UI.customerLoggedInScreen();
+		return customerLoggedInScreen();
 		break;
 	case Permission::MAINTENANCE:
-		return UI.maintenanceLoggedInScreen();
+		//return maintenanceLoggedInScreen();
 		break;
 	default:
 		cout << "Error : no permissions are set for this username" << endl;
-		return 100;
+		//return 100;
 		break;
 	}
 }
 
-void Controller::loggedInOption(Permission permission, int option, Customer *user)
-{
+void Controller::managerLoggedInScreen() {
+	int option = UI.managerLoggedInScreen();
 
-	if (permission == Permission::CUSTOMER) {
-		std::string accountType;
-		switch (option)
-		{
-		case 1: 
-			accountType = UI.customerOpenAccount();
-			if (accountType == "C") {
-				user->openChequing();
-			}else{
-				user->openSavings();
+	switch (option) {
+	case 1: return managerNewCustomer();
+	case 2: return existingCustomer();
+	};
+
+}
+
+void Controller::existingCustomer() {
+	using namespace std;
+	string username;
+	username = UI.existingCustomer();
+
+	bool found = false;
+	Customer *client = nullptr;
+	for (int i = 0; i < s_customer.size() && !found; ++i) {
+		client = &s_customer[i];
+		if (client->getUsername() == username) {
+			workingOn = &s_customer[i];
+			found = true;
+		}
+	}
+
+	if (found) {
+		customerLoggedInScreen();
+	}
+	else {
+		cout << "that was an invalid user name" << endl;
+		whatUItoDisplay(); // call the function recursivelly
+	}
+
+
+}
+
+void Controller::managerNewCustomer() {
+	using namespace std;
+
+	cout << "Turn the screen to the client" << endl;
+	string username;
+	bool duplicate;
+
+	do {
+		duplicate = false;
+		username = UI.createCustomerLogin();
+
+
+		for (int i = 0; i < s_customer.size(); ++i) {
+			if (s_customer[i].getUsername() == username) {
+				duplicate = true;
 			}
-			break;
-		case 2:
-
-		case 3:
-		case 4:
-		default:
-			break;
 		}
 
+	} while (duplicate);
 
+	string password;
+	cout << "Password: ";
+	cin >> password;
+
+	Customer c_temp(username, password, Permission::CUSTOMER);
+	s_customer.push_back(c_temp);
+
+	workingOn = &c_temp;
+
+	customerLoggedInScreen();
+}
+
+void Controller::customerLoggedInScreen() {
+	int option =UI.customerLoggedInScreen();
+
+	switch (option) {
+	case 1: return openAccount();
+	case 2: return viewAccounts();
+	case 3: return logOut();
+	}
+
+
+};
+
+void Controller::logOut() {
+	// reset the user to null
+	user = nullptr;
+	login(); // return to login screen
+}
+
+void Controller::viewAccounts() {
+	using namespace std;
+	bool flag;
+	flag = UI.viewAccounts(workingOn); // if there are no accounts to display
+	if (flag) {
+		return whatUItoDisplay(); // return back to the start
+	}
+	int key = UI.selectAnAccount(workingOn);
+	string viewOrDo = UI.viewOrDoTransactions(workingOn, key);
+
+	//pointer to the account
+	Account *ptr_account = &workingOn->m_arr_acct[key];
+
+	if (viewOrDo == "V") {
+		return viewTransactions(ptr_account);
+	}
+	else if (viewOrDo == "D") {
+		return doTransactions(ptr_account);
 	}
 
 }
+
+void Controller::doTransactions(Account *&account) {
+	using namespace std;
+	int option = UI.doTransaction();
+
+	switch (option) {
+	case 1: return makeADeposit(account);
+	case 2: return withdrawMoney(account);
+	case 3: return transferMoney(account);
+	}
+}
+
+void Controller::withdrawMoney(Account *&account) {
+	int amount = UI.makeWithdraw();
+	account->withdraw(amount);
+
+	bool otherTransaction = UI.otherTransaction();
+
+	if (otherTransaction) {
+		return doTransactions(account);
+	}
+	else {
+		return whatUItoDisplay();
+	}
+}
+
+void Controller::transferMoney(Account *&account) {
+	
+	using namespace std;
+
+	cout << "Which account do you want to transfer to: " << endl;
+	int key = UI.selectAnAccount(workingOn);
+
+	float amount = UI.howMuchToTransfer();
+
+
+	//pointer to the account
+	Account *other_account = &workingOn->m_arr_acct[key];
+
+	account->transfer(other_account, amount);
+
+	if (UI.otherTransaction()) {
+		return doTransactions(account);
+	}
+	else {
+		return whatUItoDisplay();
+	}
+}
+
+void Controller::makeADeposit(Account *&account) {
+	int amount = UI.makeADeposit();
+	account->deposit(amount);
+
+	bool otherTransaction = UI.otherTransaction();
+
+	if (otherTransaction) {
+		return doTransactions(account);
+	}
+	else {
+		return whatUItoDisplay();
+	}
+}
+
+void Controller::viewTransactions(Account *&account) {
+	using namespace std;
+	UI.viewTransactions(account);
+	bool login = UI.backToLogin();
+
+	if (login) {
+		return whatUItoDisplay();
+	}
+
+
+}
+
 
 void Controller::saveCustomer()
 {
@@ -76,10 +249,14 @@ void Controller::saveCustomer()
 		
 		myFile << c_temp.getUsername() << endl;
 		myFile << c_temp.getPassword() << endl;
+
+		//if it is a customer we wil save all the account information
 		myFile << static_cast<int>(c_temp.getPermission()) << endl;
 
+		if (c_temp.getPermission() == Permission::CUSTOMER)
+		{
 		saveCustomerAccounts(myFile, c_temp);
-
+		};
 	}
 }
 
@@ -139,23 +316,36 @@ void Controller::saveCustomerTransactions(std::fstream & myFile, Account & accou
 
 
 
-bool Controller::login(Customer *ptr)
+void Controller::login()
 {
+	bool loggedIN = false;
+
 	using namespace std;
 	string input_password, input_username;
 
 	//call the login screen
-	UI.login(input_username, input_password);
-	
 
-	for (int i = 0; i < s_customer.size(); ++i) {
-		ptr = &s_customer[i];
-		if (ptr->getUsername().compare(input_username) == 0 && ptr->getPassword().compare(input_password) == 0) {
-			user_loggedIn = input_username; // store the person who is logged in
-			return true;
+		UI.login(input_username, input_password);
+
+
+		/*
+		If the user is not a customer we will login as a manager
+		*/
+		for (int i = 0; i < s_customer.size(); ++i) {
+			user = &s_customer[i];
+
+			if (user->getUsername().compare(input_username) == 0 && user->getPassword().compare(input_password) == 0) {
+				user_loggedIn = input_username; // store the person who is logged in
+
+				if (user->getPermission() == Permission::CUSTOMER) {
+					workingOn= &s_customer[i];
+					return whatUItoDisplay();
+				}
+				return whatUItoDisplay();
+			}
 		}
-	}
-	return false;
+		//try to log in as a manager
+
 
 }
 
@@ -170,6 +360,7 @@ void Controller::loadCustomers()
 	int i_permission;
 	Permission permission;
 	int num_accounts;
+	int next;
 
 	std::vector<Account> stackAcct;
 
@@ -184,11 +375,15 @@ void Controller::loadCustomers()
 		myFile >> password;
 		myFile >> i_permission;
 		permission = static_cast<Permission> (i_permission);
-		myFile >> num_accounts;// How many accounts
 
 		Customer customer(username, password, permission);
-		/* The next next function will load all the accounts for the customer*/
-		customer.m_arr_acct = loadAccts(myFile, num_accounts);
+		cout << i_permission;
+
+		if (permission == Permission::CUSTOMER) {
+			myFile >> num_accounts;// How many accounts
+			/* The next next function will load all the accounts for the customer*/
+			customer.m_arr_acct = loadAccts(myFile, num_accounts);
+		}
 		s_customer.push_back(customer); // push the customer
 	}
 
@@ -276,15 +471,7 @@ int main() {
 	Try to log in the program
 	*/
 
-	Customer *user=nullptr; // this is a pointer to the found user
-
-	do {
-		loggedIn = control.login(user);
-	} while (!loggedIn);
-
-	Permission p_status = user->getPermission();
-	int option = control.whatUserIsLoggged(p_status);
-
+		control.login();
 	
 
 

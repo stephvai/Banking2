@@ -5,14 +5,30 @@ class Controller
 {
 public:
 	std::vector <Customer> s_customer; // This will hold all the customers in the program
+
 	Interface UI;
 	std::string user_loggedIn;
+	Customer *user = nullptr;
+	Customer *workingOn = nullptr;
 
 public:
 	Controller();
 	~Controller();
 
-	int whatUserIsLoggged(Permission permission);
+	void openAccount();
+
+	void whatUItoDisplay();
+	void managerLoggedInScreen();
+	void existingCustomer();
+	void managerNewCustomer();
+	void customerLoggedInScreen();
+	void logOut();
+	void viewAccounts();
+	void doTransactions(Account *& account);
+	void withdrawMoney(Account *& account);
+	void transferMoney(Account *& account);
+	void makeADeposit(Account *& account);
+	void viewTransactions(Account *& account);
 	void loggedInOption(Permission permission, int option, Customer * user);
 
 	void saveCustomer();
@@ -24,7 +40,7 @@ private:
 	Methods go here
 	*/
 public:
-	bool login(Customer * ptr);
+	void login();
 	void loadCustomers();
 
 	/*
