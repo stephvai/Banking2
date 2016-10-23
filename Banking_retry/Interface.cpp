@@ -329,7 +329,7 @@ void Interface::viewTransactions(Account *&account) {
 bool Interface::backToLogin() {
 	using namespace std;
 
-	cout << "Press Enter to Continue to login screen" << endl;
+	cout << "Press Enter to Continue.." << endl;
 
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	cin.get();

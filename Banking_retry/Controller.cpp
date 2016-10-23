@@ -175,10 +175,7 @@ void Controller::viewLoans()
 		return initialCustomerScreen();
 	}
 	else {
-		cout << "Press Enter to Continue..." << endl;
-
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		cin.get();
+		UI.backToLogin();
 
 		return doTransactionOnLoan();
 
@@ -195,6 +192,7 @@ void Controller::Loans()
 		if (input == "Y") {
 			double amount = UI.amountOfLoan();
 			cout << "To which account?: " << endl;
+			UI.backToLogin();
 			bool noAccount =UI.viewAccounts(workingOn);
 
 			if (noAccount) {
@@ -209,6 +207,7 @@ void Controller::Loans()
 		}
 		else {
 			cout << "returning to previous screen" << endl;
+			UI.backToLogin();
 			return initialCustomerScreen();
 		}
 	}
@@ -265,10 +264,18 @@ void Controller::doTransactions(Account *&account) {
 
 void Controller::closeAccount(Account *&account) {
 	using namespace std;
+
+	if (account->getBalance() != 0) {
+		cout << "Account must be at a zero balance before closing" << endl;
+		UI.backToLogin();
+		return initialCustomerScreen();
+	}
+
 	for (int i = 0; i < workingOn->m_arr_acct.size() > i; ++i) {
 
 		if (workingOn->m_arr_acct[i].getActNum() == account->getActNum()) {
 			cout << "Account number: " << workingOn->m_arr_acct[i].getActNum() << " has been closed" << endl;
+			UI.backToLogin();
 			workingOn->m_arr_acct.erase(workingOn->m_arr_acct.begin() + i);
 		}
 
@@ -280,6 +287,7 @@ void Controller::closeAccount(Account *&account) {
 void Controller::withdrawMoney(Account *&account) {
 	int amount = UI.makeWithdraw();
 	account->withdraw(amount);
+	std::cout << "Balance : " << account->getBalance() << std::endl;
 
 	bool otherTransaction = UI.otherTransaction();
 
@@ -306,6 +314,10 @@ void Controller::transferMoney(Account *&account) {
 
 	account->transfer(other_account, amount);
 
+	std::cout << "Balance of " <<account->getActNum() <<": " << account->getBalance() << std::endl;
+	std::cout << "Balance of " << other_account->getActNum() << ": " << other_account->getBalance() << std::endl;
+	UI.backToLogin();
+
 	if (UI.otherTransaction()) {
 		return doTransactions(account);
 	}
@@ -317,6 +329,8 @@ void Controller::transferMoney(Account *&account) {
 void Controller::makeADeposit(Account *&account) {
 	int amount = UI.makeADeposit();
 	account->deposit(amount);
+	std::cout << "Balance : " << account->getBalance() << std::endl;
+	UI.backToLogin();
 
 	bool otherTransaction = UI.otherTransaction();
 
