@@ -24,8 +24,8 @@ int Interface::managerLoggedInScreen() {
 	using namespace std;
 	int input;
 
-	cout << "[1] Existing Client" << endl;
-	cout << "[2] New client" << endl;
+	cout << "[1] New client" << endl;
+	cout << "[2] Existing Client" << endl;
 
 	do {
 		cout << "Enter: ";
@@ -45,6 +45,26 @@ std::string Interface::createCustomerLogin() {
 	return username;
 }
 
+/*
+
+int Interface::managerCustomerScreen()
+{
+	using namespace std;
+
+	int input;
+
+	cout << "[1] Make a deposit" << endl;
+	cout << "[2] Withdraw money " << endl;
+	cout << "[3] Transfer some funds " << endl;
+	cout << "[4] Loans " << endl;
+	cout << "[5]"
+	cout << "Enter: ";
+
+
+	return 0;
+}
+
+*/
 void Interface::login(std::string &username, std::string &password)
 {
 	using namespace std;
@@ -62,6 +82,8 @@ int Interface::doTransaction() {
 	cout << "[1] Make a deposit " << endl;
 	cout << "[2] Withdraw money " << endl;
 	cout << "[3] Transfer some funds " << endl;
+	cout << "[4] Close the account " << endl;
+
 	cout << "Enter: ";
 
 	cin >> input;
@@ -118,7 +140,7 @@ bool Interface::otherTransaction() {
 	return false;
 }
 
-bool Interface::viewAccounts(Customer *&user) {
+bool Interface::viewAccounts(Customer *&local_user) {
 	using namespace std;
 
 	Type e_accountType;
@@ -126,23 +148,23 @@ bool Interface::viewAccounts(Customer *&user) {
 	int accountNum;
 	float balance;
 
-	if (user->m_arr_acct.size() == 0) {
+	if (local_user->m_arr_acct.size() == 0) {
 		cout << "There is no accounts; please open one" << endl;
 		return true;
 	}
 
 	cout << "key: " << "\ttype: " << "\taccount num: " << "\t\tbal: " << endl;
 
-	for (int i = 0; i < user->m_arr_acct.size(); ++i) {
+	for (int i = 0; i < local_user->m_arr_acct.size(); ++i) {
 
-		e_accountType = user->m_arr_acct[i].m_act_type;
+		e_accountType = local_user->m_arr_acct[i].m_act_type;
 		switch (e_accountType) {
 		case Type::Chequing: s_accountType = "Chq"; break;
 		case Type::Saving: s_accountType = "Sav"; break;
 		}
 
-		accountNum = user->m_arr_acct[i].getActNum();
-		balance = user->m_arr_acct[i].getBalance();
+		accountNum = local_user->m_arr_acct[i].getActNum();
+		balance = local_user->m_arr_acct[i].getBalance();
 
 		cout <<i <<"\t "  << s_accountType << "\t" << accountNum << "\t\t\t" << balance <<"\n" << endl;
 	}
@@ -150,18 +172,18 @@ bool Interface::viewAccounts(Customer *&user) {
 
 }
 
-int Interface::selectAnAccount(Customer *&user) {
+int Interface::selectAnAccount(Customer *&local_user) {
 	using namespace std;
 	int input;
 	do {
 		cout << "Enter a valid account key ";
 		cin >> input;
-	} while (input < 0 || input >= user->m_arr_acct.size());
+	} while (input < 0 || input >= local_user->m_arr_acct.size());
 
 	return input;
 }
 
-std::string Interface::viewOrDoTransactions(Customer *&user, int accountKey){
+std::string Interface::viewOrDoTransactions(Customer *&local_user, int accountKey){
 	using namespace std;
 	string stringInput;
 	do {

@@ -18,9 +18,9 @@ public:
 	float howMuchToTransfer();
 	float makeADeposit();
 	bool otherTransaction();
-	bool viewAccounts(Customer *& user);
-	int selectAnAccount(Customer *& user);
-	std::string viewOrDoTransactions(Customer *& user, int accountKey);
+	bool viewAccounts(Customer *& local_user);
+	int selectAnAccount(Customer *& local_user);
+	std::string viewOrDoTransactions(Customer *& local_user, int accountKey);
 	void viewTransactions(Account *& account);
 	bool backToLogin();
 	int customerLoggedInScreen();
@@ -30,6 +30,6 @@ public:
 
 	int managerLoggedInScreen();
 	std::string createCustomerLogin();
-	int maintenanceLoggedInScreen();
+	int managerCustomerScreen();
 };
 

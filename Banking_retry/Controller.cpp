@@ -4,6 +4,7 @@
 
 Controller::Controller()
 {
+	s_customer.reserve(100);
 }
 
 
@@ -27,7 +28,7 @@ void Controller::openAccount() {
 	}
 
 	UI.backToLogin();
-	whatUItoDisplay();
+	return customerLoggedInScreen();
 
 }
 
@@ -59,12 +60,12 @@ void Controller::managerLoggedInScreen() {
 
 	switch (option) {
 	case 1: return managerNewCustomer();
-	case 2: return existingCustomer();
+	case 2: return managerExistingCustomer();
 	};
 
 }
 
-void Controller::existingCustomer() {
+void Controller::managerExistingCustomer() {
 	using namespace std;
 	string username;
 	username = UI.existingCustomer();
@@ -80,11 +81,11 @@ void Controller::existingCustomer() {
 	}
 
 	if (found) {
-		customerLoggedInScreen();
+		return customerLoggedInScreen();
 	}
 	else {
 		cout << "that was an invalid user name" << endl;
-		whatUItoDisplay(); // call the function recursivelly
+		return whatUItoDisplay(); // call the function recursivelly
 	}
 
 
@@ -114,13 +115,17 @@ void Controller::managerNewCustomer() {
 	cout << "Password: ";
 	cin >> password;
 
-	Customer c_temp(username, password, Permission::CUSTOMER);
+	Customer  c_temp(username, password, Permission::CUSTOMER);
 	s_customer.push_back(c_temp);
+	workingOn = &s_customer[s_customer.size() - 1];
 
-	workingOn = &c_temp;
-
-	customerLoggedInScreen();
+	return customerLoggedInScreen();
 }
+
+
+
+
+
 
 void Controller::customerLoggedInScreen() {
 	int option =UI.customerLoggedInScreen();
@@ -136,6 +141,7 @@ void Controller::customerLoggedInScreen() {
 
 void Controller::logOut() {
 	// reset the user to null
+	workingOn = nullptr;
 	user = nullptr;
 	login(); // return to login screen
 }
@@ -145,7 +151,7 @@ void Controller::viewAccounts() {
 	bool flag;
 	flag = UI.viewAccounts(workingOn); // if there are no accounts to display
 	if (flag) {
-		return whatUItoDisplay(); // return back to the start
+		return customerLoggedInScreen(); // return back to the start
 	}
 	int key = UI.selectAnAccount(workingOn);
 	string viewOrDo = UI.viewOrDoTransactions(workingOn, key);
@@ -164,13 +170,31 @@ void Controller::viewAccounts() {
 
 void Controller::doTransactions(Account *&account) {
 	using namespace std;
-	int option = UI.doTransaction();
+	int option;
+	do {
+		option = UI.doTransaction();
+	} while (option < 1 || option > 4);
 
 	switch (option) {
 	case 1: return makeADeposit(account);
 	case 2: return withdrawMoney(account);
 	case 3: return transferMoney(account);
+	case 4: return closeAccount(account);
 	}
+}
+
+void Controller::closeAccount(Account *&account) {
+	using namespace std;
+	for (int i = 0; i < workingOn->m_arr_acct.size() > i; ++i) {
+
+		if (workingOn->m_arr_acct[i].getActNum() == account->getActNum()) {
+			cout << "Account number: " << workingOn->m_arr_acct[i].getActNum() << " has been closed" << endl;
+			workingOn->m_arr_acct.erase(workingOn->m_arr_acct.begin() + i);
+		}
+
+	}
+
+	return customerLoggedInScreen();
 }
 
 void Controller::withdrawMoney(Account *&account) {
@@ -183,7 +207,7 @@ void Controller::withdrawMoney(Account *&account) {
 		return doTransactions(account);
 	}
 	else {
-		return whatUItoDisplay();
+		return customerLoggedInScreen();
 	}
 }
 
@@ -206,7 +230,7 @@ void Controller::transferMoney(Account *&account) {
 		return doTransactions(account);
 	}
 	else {
-		return whatUItoDisplay();
+		return customerLoggedInScreen();
 	}
 }
 
@@ -220,7 +244,7 @@ void Controller::makeADeposit(Account *&account) {
 		return doTransactions(account);
 	}
 	else {
-		return whatUItoDisplay();
+		return customerLoggedInScreen();
 	}
 }
 
@@ -230,7 +254,7 @@ void Controller::viewTransactions(Account *&account) {
 	bool login = UI.backToLogin();
 
 	if (login) {
-		return whatUItoDisplay();
+		return customerLoggedInScreen();
 	}
 
 
@@ -344,7 +368,6 @@ void Controller::login()
 				return whatUItoDisplay();
 			}
 		}
-		//try to log in as a manager
 
 
 }

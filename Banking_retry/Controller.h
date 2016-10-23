@@ -19,8 +19,10 @@ public:
 
 	void whatUItoDisplay();
 	void managerLoggedInScreen();
-	void existingCustomer();
+	void managerExistingCustomer();
 	void managerNewCustomer();
+	void managerCustomerScreen();
+	void closeAccount(Account *&account);
 	void customerLoggedInScreen();
 	void logOut();
 	void viewAccounts();
@@ -29,7 +31,6 @@ public:
 	void transferMoney(Account *& account);
 	void makeADeposit(Account *& account);
 	void viewTransactions(Account *& account);
-	void loggedInOption(Permission permission, int option, Customer * user);
 
 	void saveCustomer();
 private:
