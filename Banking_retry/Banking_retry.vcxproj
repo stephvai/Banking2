@@ -163,7 +163,6 @@
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Loan.cpp" />
     <ClCompile Include="Login.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
