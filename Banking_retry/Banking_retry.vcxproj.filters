@@ -45,6 +45,9 @@
     <ClInclude Include="Permission.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Loan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -67,6 +70,12 @@
     </ClCompile>
     <ClCompile Include="Controller.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Loan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

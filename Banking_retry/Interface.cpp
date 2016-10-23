@@ -14,11 +14,57 @@ Interface::~Interface()
 std::string Interface::existingCustomer() {
 	using namespace std;
 	string username;
-	cout << "User name of the client you are looking for :" << endl;
+	cout << "User name of the client you are looking for : ";
 	cin >> username;
 	return username;
 
 }
+
+int Interface::displayLoans(Loan *&loan)
+{
+	using namespace std;
+
+	if (loan == nullptr) {
+		cout << "No loans to display" << endl;
+		return 1;
+	}
+	else {
+		cout << "\t\t" << "principal:" << "\t\t" << "interest" << endl;
+		cout << "[1] \t\t" << loan->principal << "\t\t" << loan->interest << endl;
+		return 0;
+	}
+}
+
+int Interface::doTransactionOnLoan()
+{
+	using namespace std;
+
+	int input;
+
+
+	do {
+		cout << "[1] payment" << endl;
+		cout << "[2] return to login screen" << endl;
+		cout << "Enter: ";
+		cin >> input;
+	} while (input != 1 && input != 2);
+	return input;
+}
+
+int Interface::loanPayment()
+{
+	using namespace std;
+	int amount;
+
+	do {
+		cout << "How much do you want to pay?: ";
+		cin >> amount;
+	} while (amount <= 0);
+
+	return amount;
+}
+
+
 
 int Interface::managerLoggedInScreen() {
 	using namespace std;
@@ -45,26 +91,61 @@ std::string Interface::createCustomerLogin() {
 	return username;
 }
 
-/*
-
-int Interface::managerCustomerScreen()
+int Interface::managerCustomerLoggedInScreen()
 {
 	using namespace std;
 
-	int input;
+	cout << "Select an option: \n" << endl;
+	cout << "[1] Open an account" << endl;
+	cout << "[2] View accounts" << endl;
+	cout << "[3] Loans" << endl;
+	cout << "[4] Exit existing Customer" << endl;
 
-	cout << "[1] Make a deposit" << endl;
-	cout << "[2] Withdraw money " << endl;
-	cout << "[3] Transfer some funds " << endl;
-	cout << "[4] Loans " << endl;
-	cout << "[5]"
 	cout << "Enter: ";
 
+	int input;
 
-	return 0;
+	do {
+		cin >> input;
+
+		/*
+		Error handling
+		*/
+		if (input > 4 || input < 0) {
+			cout << "Error: enter a valid option" << endl;
+		}
+	} while (input > 4 || input < 0); //invalid option
+
+	return input;
 }
 
-*/
+std::string Interface::openLoan()
+{
+	using namespace std;
+	string input;
+	do {
+		cout << "Would you like to open one? [Y/N] : ";
+		cin >> input;
+	} while (input != "Y" && input != "N");
+
+	return input;
+}
+
+double Interface::amountOfLoan()
+{
+	using namespace std;
+	double amount;
+
+	do {
+		cout << "Amount: ";
+		cin >> amount;
+	} while (amount <= 0);
+
+	return amount;
+
+}
+
+
 void Interface::login(std::string &username, std::string &password)
 {
 	using namespace std;
@@ -268,7 +349,8 @@ int Interface::customerLoggedInScreen()
 	cout << "Select an option: \n"<< endl;
 	cout << "[1] Open an account" << endl;
 	cout << "[2] View accounts" << endl;
-	cout << "[3] Logout" << endl;
+	cout << "[3] View loans" << endl;
+	cout << "[4] Logout" << endl;
 	
 	cout << "Enter: ";
 
@@ -280,10 +362,10 @@ int Interface::customerLoggedInScreen()
 		/*
 		Error handling
 		*/
-		if (input > 3 || input < 0) {
+		if (input > 4 || input < 0) {
 			cout << "Error: enter a valid option" << endl;
 		}
-	} while (input > 3 || input < 0); //invalid option
+	} while (input > 4 || input < 0); //invalid option
 
 	return input;
 }

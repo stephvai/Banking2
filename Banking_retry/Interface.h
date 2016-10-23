@@ -27,9 +27,14 @@ public:
 	std::string customerOpenAccount();
 
 	std::string existingCustomer();
-
+	int displayLoans(Loan *&loan);
+	int doTransactionOnLoan();
+	int loanPayment();
 	int managerLoggedInScreen();
 	std::string createCustomerLogin();
-	int managerCustomerScreen();
+	int managerCustomerLoggedInScreen();
+	std::string openLoan();
+	double amountOfLoan();
+
 };
 

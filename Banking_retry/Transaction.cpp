@@ -1,24 +1,26 @@
 #include "stdafx.h"
 #include "Transactions.h"
 
-
 Transaction::Transaction()
 {
 }
 
 Transaction::Transaction(double amount, DR_CR dr_cr, Code code):m_amount{amount}, m_code{code}, m_dr_cr{dr_cr}
 {
+	/*
+	code for today date is:  http://www.cplusplus.com/reference/ctime/strftime/
+	*/
 	using namespace std;
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer[80];
 
-	time_t rawtime;
-	tm timeinfo;
-	errno_t result = localtime_s(&timeinfo, &rawtime);
-	
-	int year = timeinfo.tm_year + 1900;
-	int month = timeinfo.tm_mon + 1;
-	int day = timeinfo.tm_mday;
+  time (&rawtime);
+  timeinfo = localtime (&rawtime);
 
-	m_date = "hello";
+  strftime (buffer,80,"%D",timeinfo);
+
+  m_date= string(buffer);
 
 }
 

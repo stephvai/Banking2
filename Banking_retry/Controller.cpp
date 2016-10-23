@@ -28,7 +28,7 @@ void Controller::openAccount() {
 	}
 
 	UI.backToLogin();
-	return customerLoggedInScreen();
+	return initialCustomerScreen();
 
 }
 
@@ -81,10 +81,11 @@ void Controller::managerExistingCustomer() {
 	}
 
 	if (found) {
-		return customerLoggedInScreen();
+		return initialCustomerScreen();
 	}
 	else {
 		cout << "that was an invalid user name" << endl;
+		client == nullptr; // return pointer to null
 		return whatUItoDisplay(); // call the function recursivelly
 	}
 
@@ -119,7 +120,19 @@ void Controller::managerNewCustomer() {
 	s_customer.push_back(c_temp);
 	workingOn = &s_customer[s_customer.size() - 1];
 
-	return customerLoggedInScreen();
+	return initialCustomerScreen();
+}
+
+void Controller::managerCustomerScreen()
+{
+}
+
+void Controller::initialCustomerScreen()
+{
+	switch (user->getPermission()) {
+	case Permission::CUSTOMER: return customerLoggedInScreen();
+	case Permission::MANAGER: return managerCustomerLoggedInScreen();
+	}
 }
 
 
@@ -133,11 +146,78 @@ void Controller::customerLoggedInScreen() {
 	switch (option) {
 	case 1: return openAccount();
 	case 2: return viewAccounts();
-	case 3: return logOut();
+	case 3: return viewLoans();
+	case 4: return logOut();
 	}
 
 
-};
+}
+void Controller::managerCustomerLoggedInScreen()
+{
+	int option = UI.managerCustomerLoggedInScreen();
+	switch (option) {
+	case 1: return openAccount();
+	case 2: return viewAccounts();
+	case 3: return Loans();
+	case 4: return whatUItoDisplay();
+	}
+}
+
+
+
+
+void Controller::viewLoans()
+{
+	using namespace std;
+	int option = UI.displayLoans(workingOn->loan);
+
+	if (option == 1) {
+		return initialCustomerScreen();
+	}
+	else {
+		cout << "Press Enter to Continue..." << endl;
+
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cin.get();
+
+		return doTransactionOnLoan();
+
+	}
+}
+void Controller::Loans()
+{
+	using namespace std;
+
+	if (workingOn->loan == nullptr) {
+
+		string input = UI.openLoan();
+
+		if (input == "Y") {
+			double amount = UI.amountOfLoan();
+			cout << "To which account?: " << endl;
+			bool noAccount =UI.viewAccounts(workingOn);
+
+			if (noAccount) {
+				return initialCustomerScreen();
+			}
+
+
+			int account = UI.selectAnAccount(workingOn);
+
+			workingOn->openLoan(workingOn->m_arr_acct[account], amount);
+			return initialCustomerScreen();
+		}
+		else {
+			cout << "returning to previous screen" << endl;
+			return initialCustomerScreen();
+		}
+	}
+	else {
+		return viewLoans();
+	}
+	};
+
+
 
 void Controller::logOut() {
 	// reset the user to null
@@ -151,7 +231,7 @@ void Controller::viewAccounts() {
 	bool flag;
 	flag = UI.viewAccounts(workingOn); // if there are no accounts to display
 	if (flag) {
-		return customerLoggedInScreen(); // return back to the start
+		return initialCustomerScreen(); // return back to the start
 	}
 	int key = UI.selectAnAccount(workingOn);
 	string viewOrDo = UI.viewOrDoTransactions(workingOn, key);
@@ -194,7 +274,7 @@ void Controller::closeAccount(Account *&account) {
 
 	}
 
-	return customerLoggedInScreen();
+	return initialCustomerScreen();
 }
 
 void Controller::withdrawMoney(Account *&account) {
@@ -207,7 +287,7 @@ void Controller::withdrawMoney(Account *&account) {
 		return doTransactions(account);
 	}
 	else {
-		return customerLoggedInScreen();
+		return initialCustomerScreen();
 	}
 }
 
@@ -230,7 +310,7 @@ void Controller::transferMoney(Account *&account) {
 		return doTransactions(account);
 	}
 	else {
-		return customerLoggedInScreen();
+		return initialCustomerScreen();
 	}
 }
 
@@ -244,7 +324,7 @@ void Controller::makeADeposit(Account *&account) {
 		return doTransactions(account);
 	}
 	else {
-		return customerLoggedInScreen();
+		return initialCustomerScreen();
 	}
 }
 
@@ -254,9 +334,39 @@ void Controller::viewTransactions(Account *&account) {
 	bool login = UI.backToLogin();
 
 	if (login) {
-		return customerLoggedInScreen();
+		return initialCustomerScreen();
 	}
 
+
+}
+
+void Controller::doTransactionOnLoan()
+{
+	int option = UI.doTransactionOnLoan();
+
+	switch (option) {
+	case 1: return loanPayment();
+	case 2: return initialCustomerScreen();
+	}
+}
+
+void Controller::loanPayment()
+{
+	using namespace std;
+	int amount = UI.loanPayment();
+	cout << "From which account? : " << endl;
+	bool noAccounts = UI.viewAccounts(workingOn);
+
+	if (noAccounts) {
+		return initialCustomerScreen();
+	}
+
+	int accountNum = UI.selectAnAccount(workingOn);
+
+
+	workingOn->payLoan(workingOn->m_arr_acct[accountNum],amount);
+
+	return initialCustomerScreen();
 
 }
 
@@ -283,6 +393,8 @@ void Controller::saveCustomer()
 		};
 	}
 }
+
+
 
 void Controller::saveCustomerAccounts(std::fstream & myFile, Customer & customer)
 {

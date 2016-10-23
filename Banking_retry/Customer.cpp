@@ -24,3 +24,18 @@ void Customer::openChequing()
 	Account a_temp(Type::Chequing);
 	m_arr_acct.push_back(a_temp);
 }
+
+void Customer::openLoan(Account &account, double amount)
+{
+	loan = new Loan(account, amount);
+}
+
+void Customer::payLoan(Account & account, double amount)
+{
+	loan->payLoan(account, amount);
+	
+	if (loan->principal == 0) {
+		delete loan;
+		loan = nullptr;
+	}
+}

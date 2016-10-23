@@ -22,8 +22,12 @@ public:
 	void managerExistingCustomer();
 	void managerNewCustomer();
 	void managerCustomerScreen();
+	void initialCustomerScreen();
 	void closeAccount(Account *&account);
 	void customerLoggedInScreen();
+	void managerCustomerLoggedInScreen();
+	void viewLoans();
+	void Loans();
 	void logOut();
 	void viewAccounts();
 	void doTransactions(Account *& account);
@@ -31,6 +35,8 @@ public:
 	void transferMoney(Account *& account);
 	void makeADeposit(Account *& account);
 	void viewTransactions(Account *& account);
+	void doTransactionOnLoan();
+	void loanPayment();
 
 	void saveCustomer();
 private:
