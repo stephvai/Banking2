@@ -1,0 +1,22 @@
+super			manager			searched: 		joe			10/23/16			07:17:09 PM
+super			manager			new Loan; user: 	joe			10/23/16			07:17:16 PM
+super			manager			logging out 					10/23/16			07:17:19 PM
+super			manager			searched: 		joe			10/23/16			07:17:45 PM
+super			manager			Deposit from account: 500 amount: 100$			10/23/16			07:17:51 PM
+super			manager			searched: 			joe			10/23/16			07:19:53 PM
+super			manager			Withdraw from account: 500 amount: 500$			10/23/16			07:20:00 PM
+super			manager			Opened CHQ user: 	joe			10/23/16			07:20:05 PM
+super			manager			logging out 						10/23/16			07:20:08 PM
+super			manager			searched: joe						10/23/16			07:24:18 PM
+super			manager			Deposit from account: 500 amount: 500$			10/23/16			07:24:23 PM
+super			manager			Opened CHQ user: joe					10/23/16			07:24:30 PM
+super			manager			new Loan; user: joe					10/23/16			07:24:39 PM
+super			manager			Opened CHQ user: joe					10/23/16			07:25:08 PM
+super			manager			logging out 						10/23/16			07:25:16 PM
+mechanic			maintenance			logging out 						10/23/16			07:48:35 PM
+super			manager			logged in						10/23/16			07:54:45 PM
+super			manager			logging out 						10/23/16			07:54:47 PM
+mechanic			maintenance			logged in						10/23/16			07:55:20 PM
+super			manager			logged in						10/23/16			08:04:19 PM
+super			manager			searched: joe						10/23/16			08:04:22 PM
+super			manager			logging out 						10/23/16			08:04:26 PM

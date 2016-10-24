@@ -23,16 +23,16 @@ public:
 	/*
 	Methods
 	*/
-	void withdraw(double amount);
-	void deposit(double amount);
-	void transfer(Account *& otherAct, double amount);
+	int withdraw(double amount);
+	int deposit(double amount);
+	int transfer(Account *& otherAct, double amount);
 
 	/*
 	Getter / Setter
 	*/
 	double getBalance();
 	void setBalance(double amount);
-	double getActNum();
+	int getActNum();
 
 
 	/*
@@ -49,8 +49,8 @@ private:
 	private methods
 	*/
 
-	void withdrawCHQ(double amount);
-	void withdrawSVG(double amount);
+	int withdrawCHQ(double amount);
+	int withdrawSVG(double amount);
 	bool fee();
 };
 

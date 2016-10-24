@@ -35,6 +35,7 @@ public:
 	int managerCustomerLoggedInScreen();
 	std::string openLoan();
 	double amountOfLoan();
+	int maintenanceLoggedInScreen(int trace);
 
 };
 

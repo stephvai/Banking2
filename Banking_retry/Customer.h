@@ -14,6 +14,6 @@ public:
 	void openSavings();
 	void openChequing();
 	void openLoan(Account &account, double amount);
-	void payLoan(Account &account, double amount);
+	int payLoan(Account &account, double amount);
 };
 

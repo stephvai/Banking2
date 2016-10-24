@@ -148,6 +148,7 @@
     <ClInclude Include="Account.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Customer.h" />
+    <ClInclude Include="Date.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Loan.h" />
     <ClInclude Include="Login.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Account.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Customer.cpp" />
+    <ClCompile Include="Date.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Loan.cpp" />
     <ClCompile Include="Login.cpp" />

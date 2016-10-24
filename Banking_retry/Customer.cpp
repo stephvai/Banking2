@@ -30,12 +30,16 @@ void Customer::openLoan(Account &account, double amount)
 	loan = new Loan(account, amount);
 }
 
-void Customer::payLoan(Account & account, double amount)
+int Customer::payLoan(Account & account, double amount)
 {
-	loan->payLoan(account, amount);
+	int failure =loan->payLoan(account, amount);
 	
-	if (loan->principal == 0) {
+	if (loan->principal == 0 && !failure) {
 		delete loan;
 		loan = nullptr;
+		return 0;
+	}
+	else {
+		return 1;
 	}
 }

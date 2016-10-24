@@ -1,6 +1,7 @@
+#pragma once
 #include "Customer.h"
 #include "Interface.h"
-#pragma once
+#include "Date.h"
 class Controller
 {
 public:
@@ -15,9 +16,12 @@ public:
 	Controller();
 	~Controller();
 
+	int m_trace;
+
 	void openAccount();
 
 	void whatUItoDisplay();
+	void maintenanceLoggedInScreen();
 	void managerLoggedInScreen();
 	void managerExistingCustomer();
 	void managerNewCustomer();
@@ -39,6 +43,7 @@ public:
 	void loanPayment();
 
 	void saveCustomer();
+	void traceAndSave(std::string str);
 private:
 	void saveCustomerAccounts(std::fstream &myFile, Customer &customer);
 	void saveCustomerTransactions(std::fstream &myFile, Account &account);

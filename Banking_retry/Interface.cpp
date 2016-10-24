@@ -72,11 +72,12 @@ int Interface::managerLoggedInScreen() {
 
 	cout << "[1] New client" << endl;
 	cout << "[2] Existing Client" << endl;
+	cout << "[3] Logout" << endl;
 
 	do {
 		cout << "Enter: ";
 		cin >> input;
-	} while (input < 1 || input > 2);
+	} while (input < 1 || input > 3);
 
 		return input;
 
@@ -142,6 +143,30 @@ double Interface::amountOfLoan()
 	} while (amount <= 0);
 
 	return amount;
+
+}
+
+int Interface::maintenanceLoggedInScreen(int trace)
+{
+	using namespace std;
+	int input;
+
+	do {
+		if (trace) {
+			cout << "[1] Turn trace OFF " << endl;
+		}
+		else {
+			cout << "[1] Turn trace ON " << endl;
+		}
+		cout << "[2] Logout" << endl;
+		
+		cout << "Enter: ";
+		cin >> input;
+
+	} while (input != 1 && input != 2);
+
+	return input;
+
 
 }
 

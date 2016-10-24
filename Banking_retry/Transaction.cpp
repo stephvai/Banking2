@@ -10,7 +10,7 @@ Transaction::Transaction(double amount, DR_CR dr_cr, Code code):m_amount{amount}
 	/*
 	code for today date is:  http://www.cplusplus.com/reference/ctime/strftime/
 	*/
-	using namespace std;
+  using namespace std;
   time_t rawtime;
   struct tm * timeinfo;
   char buffer[80];

@@ -27,17 +27,17 @@ Account::~Account()
 }
 
 
-void Account::withdraw(double amount)
+int Account::withdraw(double amount)
 {
 	using namespace std;
 
 	switch (m_act_type)
 	{
 	case Type::Chequing:
-		withdrawCHQ(amount);
+		return withdrawCHQ(amount);
 		break;
 	case Type::Saving:
-		withdrawSVG(amount);
+		return withdrawSVG(amount);
 		break;
 	default:
 		cout << "something went wrong " << endl;
@@ -45,17 +45,28 @@ void Account::withdraw(double amount)
 	}
 }
 
-void Account::deposit(double amount)
+int Account::deposit(double amount)
 {
 	Transaction transaction(amount, DR_CR::CR, Code::DEPOSIT);
 	m_transactions.push_back(transaction);
 	setBalance(getBalance() + amount);
+	return 0;
 }
 
-void Account::transfer(Account *&otherAct, double amount)
+int Account::transfer(Account *&otherAct, double amount)
 {
-	withdraw(amount);
-	otherAct->deposit(amount);
+	using namespace std;
+	if (getActNum() != otherAct->getActNum()) {
+		int failure = withdraw(amount);
+		if (!failure) {
+			otherAct->deposit(amount);
+			return 0;
+		}
+	}
+	else {
+		cout << "You cannot transfer to the same account" << endl;
+		return 1;
+	}
 }
 
 double Account::getBalance()
@@ -68,7 +79,7 @@ void Account::setBalance(double amount)
 	m_balance = amount;
 }
 
-double Account::getActNum()
+int Account::getActNum()
 {
 	return m_act_num;
 }
@@ -80,7 +91,7 @@ double Account::getActNum()
 private helper methods
 */
 
-void Account::withdrawCHQ(double amount)
+int Account::withdrawCHQ(double amount)
 {
 
 
@@ -103,8 +114,8 @@ void Account::withdrawCHQ(double amount)
 				setBalance(getBalance() - amount);
 				Transaction transaction2(amount, DR_CR::DR, Code::WITHDRAW);
 				m_transactions.push_back(transaction2);
+				return 0;
 			}
-		return;
 	}
 	/*
 	If there is enough money in the account and it doesn't hit the treshhold
@@ -113,15 +124,16 @@ void Account::withdrawCHQ(double amount)
 		setBalance(getBalance() - amount);
 		Transaction transaction(amount, DR_CR::DR, Code::WITHDRAW);
 		m_transactions.push_back(transaction);
-		return;
+		return 0;
 	}
 	else {
 		std::cout << "Your balance must be greater than 0" << std::endl;
+		return 1;
 	}
 
 }
 
-void Account::withdrawSVG(double amount)
+int Account::withdrawSVG(double amount)
 {
 	using namespace std;
 
@@ -129,10 +141,11 @@ void Account::withdrawSVG(double amount)
 		setBalance(getBalance() - amount);
 		Transaction transaction(amount, DR_CR::DR, Code::WITHDRAW);
 		m_transactions.push_back(transaction);
-		return;
+		return 0;
 	}
 	else {
 		cout << "Your balance must be greater than 0" << endl;
+		return 1;
 	}
 }
 

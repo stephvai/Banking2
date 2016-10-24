@@ -1,6 +1,10 @@
+1
 super
 power
 0
+mechanic
+power
+2
 joe
 hero
 1

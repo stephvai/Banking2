@@ -7,6 +7,6 @@ public:
 	~Loan();
 	double interest = 0.08;
 	double principal;
-	void payLoan(Account &account, double amount);
+	int payLoan(Account &account, double amount);
 };
 
