@@ -19,6 +19,7 @@ public:
 	int m_trace;
 
 	void openAccount();
+	void addOverdraft();
 
 	void whatUItoDisplay();
 	void maintenanceLoggedInScreen();
@@ -43,7 +44,7 @@ public:
 	void loanPayment();
 
 	void saveCustomer();
-	void traceAndSave(std::string str);
+	void trace(std::string str);
 private:
 	void saveCustomerAccounts(std::fstream &myFile, Customer &customer);
 	void saveCustomerTransactions(std::fstream &myFile, Account &account);
@@ -52,7 +53,7 @@ private:
 	Methods go here
 	*/
 public:
-	void login();
+	void login(Controller & control);
 	void loadCustomers();
 
 	/*

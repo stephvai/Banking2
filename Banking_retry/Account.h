@@ -1,4 +1,5 @@
 #include "Transactions.h"
+#include "Overdraft.h"
 #pragma once
 
 enum class Type
@@ -39,6 +40,7 @@ public:
 	Instance variables
 	*/
 	Type m_act_type;
+	Overdraft odp = 0;
 private:
 	int m_act_num;
 	double m_balance;

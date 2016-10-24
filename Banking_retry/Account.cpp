@@ -15,6 +15,7 @@ Account::Account(Type type):m_act_type{type}
 {
 	m_balance = 0;
 	m_act_num = ++s_accountNum;
+	m_transactions.reserve(50);
 }
 
 Account::Account(int account_num, Type type, double balance):m_act_num{account_num}, m_act_type{type}, m_balance{balance}
@@ -95,7 +96,7 @@ int Account::withdrawCHQ(double amount)
 {
 
 
-	if (getBalance() >= 1000 && (getBalance() - amount) < 1000 && (getBalance()-amount) > 0) {
+	if (getBalance() >= 1000 && (getBalance() - amount) < 1000 && (getBalance()+odp.m_amount-amount) > 0) {
 		
 		/*
 		Charge the fee and reccord the transaction
@@ -120,14 +121,14 @@ int Account::withdrawCHQ(double amount)
 	/*
 	If there is enough money in the account and it doesn't hit the treshhold
 	*/
-	else if (getBalance() - amount > 0) {
+	else if (getBalance()+odp.m_amount - amount > 0) {
 		setBalance(getBalance() - amount);
 		Transaction transaction(amount, DR_CR::DR, Code::WITHDRAW);
 		m_transactions.push_back(transaction);
 		return 0;
 	}
 	else {
-		std::cout << "Your balance must be greater than 0" << std::endl;
+		std::cout << "Your balance must be greater than the available amount" << std::endl;
 		return 1;
 	}
 
@@ -137,7 +138,7 @@ int Account::withdrawSVG(double amount)
 {
 	using namespace std;
 
-	if (getBalance() - amount > 0) {
+	if (getBalance()+odp.m_amount - amount > 0) {
 		setBalance(getBalance() - amount);
 		Transaction transaction(amount, DR_CR::DR, Code::WITHDRAW);
 		m_transactions.push_back(transaction);

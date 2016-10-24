@@ -3,6 +3,7 @@
 class Loan
 {
 public:
+	Loan(double amount);
 	Loan(Account &account, double amount);
 	~Loan();
 	double interest = 0.08;

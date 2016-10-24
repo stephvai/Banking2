@@ -30,7 +30,7 @@ int Interface::displayLoans(Loan *&loan)
 	}
 	else {
 		cout << "\t\t" << "principal:" << "\t\t" << "interest" << endl;
-		cout << "[1] \t\t" << loan->principal << "\t\t" << loan->interest << endl;
+		cout << "[1] \t\t" << loan->principal << "\t\t\t" << loan->interest << endl;
 		return 0;
 	}
 }
@@ -100,7 +100,8 @@ int Interface::managerCustomerLoggedInScreen()
 	cout << "[1] Open an account" << endl;
 	cout << "[2] View accounts" << endl;
 	cout << "[3] Loans" << endl;
-	cout << "[4] Exit existing Customer" << endl;
+	cout << "[4] Add Overdraft" << endl;
+	cout << "[5] Exit existing Customer" << endl;
 
 	cout << "Enter: ";
 
@@ -112,10 +113,10 @@ int Interface::managerCustomerLoggedInScreen()
 		/*
 		Error handling
 		*/
-		if (input > 4 || input < 0) {
+		if (input > 5 || input < 0) {
 			cout << "Error: enter a valid option" << endl;
 		}
-	} while (input > 4 || input < 0); //invalid option
+	} while (input > 5 || input < 0); //invalid option
 
 	return input;
 }
@@ -168,6 +169,17 @@ int Interface::maintenanceLoggedInScreen(int trace)
 	return input;
 
 
+}
+
+int Interface::addODP()
+{
+	int amount;
+	do {
+		using namespace std;
+		cout << "New ODP amount: ";
+		cin >> amount;
+		return amount;
+	} while (amount <= 0);
 }
 
 
@@ -253,13 +265,14 @@ bool Interface::viewAccounts(Customer *&local_user) {
 	string s_accountType;
 	int accountNum;
 	float balance;
+	int odp;
 
 	if (local_user->m_arr_acct.size() == 0) {
 		cout << "There is no accounts; please open one" << endl;
 		return true;
 	}
 
-	cout << "key: " << "\ttype: " << "\taccount num: " << "\t\tbal: " << endl;
+	cout << "key:" << "\ttype:" << "\taccount num:" << "\t\tbal:"<<"\t\todp:" << endl;
 
 	for (int i = 0; i < local_user->m_arr_acct.size(); ++i) {
 
@@ -271,8 +284,10 @@ bool Interface::viewAccounts(Customer *&local_user) {
 
 		accountNum = local_user->m_arr_acct[i].getActNum();
 		balance = local_user->m_arr_acct[i].getBalance();
+		odp = local_user->m_arr_acct[i].odp.m_amount;
 
-		cout <<i <<"\t "  << s_accountType << "\t" << accountNum << "\t\t\t" << balance <<"\n" << endl;
+
+		cout <<i <<"\t "  << s_accountType << "\t" << accountNum << "\t\t\t" << balance <<"\t\t" << odp<< endl;
 	}
 	return false;
 

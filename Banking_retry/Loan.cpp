@@ -2,6 +2,10 @@
 #include "Loan.h"
 
 
+Loan::Loan(double amount) {
+	principal = amount;
+};
+
 Loan::Loan(Account & account, double amount)
 {
 	if (amount > 0) {

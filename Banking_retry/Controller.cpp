@@ -22,17 +22,18 @@ void Controller::openAccount() {
 
 	if (option == "C") {
 		workingOn->openChequing();
-		traceAndSave("Opened CHQ for: " + workingOn->getUsername() + "\t\t");
+		trace("Opened CHQ for username " + workingOn->getUsername());
 	}
 	else if (option == "S") {
 		workingOn->openSavings();
-		traceAndSave("Opened SVG for: " + workingOn->getUsername() +"\t\t");
+		trace("Opened SVG for username " + workingOn->getUsername());
 	}
 
 	UI.backToLogin();
 	return initialCustomerScreen();
 
 }
+
 
 void Controller::whatUItoDisplay()
 {
@@ -62,12 +63,12 @@ void Controller::maintenanceLoggedInScreen() {
 	int option = UI.maintenanceLoggedInScreen(m_trace);
 	if (m_trace == 0 && option ==1) {
 		m_trace = 1;
-		traceAndSave("turning trace ON\t\t");
+		trace("turning trace ON");
 		maintenanceLoggedInScreen();
 	}
 	else if (m_trace == 1 && option == 1) {
 		m_trace = 0;
-		traceAndSave("turning trace OFF\t\t");
+		trace("turning trace OFF");
 		maintenanceLoggedInScreen();
 	}
 	else {
@@ -87,7 +88,7 @@ void Controller::managerLoggedInScreen() {
 	case 3: return logOut();
 	};
 	
-	traceAndSave("Logged in\t\t\t");
+	trace("Logged in");
 }
 
 void Controller::managerExistingCustomer() {
@@ -106,7 +107,7 @@ void Controller::managerExistingCustomer() {
 	}
 
 	if (found) {
-		traceAndSave("searched: " + workingOn->getUsername()+ "\t\t\t");
+		trace("searched for user " + workingOn->getUsername());
 		return initialCustomerScreen();
 	}
 	else {
@@ -146,7 +147,7 @@ void Controller::managerNewCustomer() {
 	s_customer.push_back(c_temp);
 	workingOn = &s_customer[s_customer.size() - 1];
 
-	traceAndSave("new profile: " +workingOn->getUsername()+ "\t\t\t");
+	trace("new profile username " +workingOn->getUsername());
 	return initialCustomerScreen();
 }
 
@@ -186,11 +187,27 @@ void Controller::managerCustomerLoggedInScreen()
 	case 1: return openAccount();
 	case 2: return viewAccounts();
 	case 3: return Loans();
-	case 4: return whatUItoDisplay();
+	case 4: return addOverdraft();
+	case 5: return whatUItoDisplay();
 	}
 }
 
+void Controller::addOverdraft() {
+	int failure =UI.viewAccounts(workingOn);
 
+	if (failure) {
+		return initialCustomerScreen();
+	}
+
+	int input = UI.selectAnAccount(workingOn);
+
+	int amount = UI.addODP();
+
+	workingOn->m_arr_acct[input].odp = Overdraft(amount);
+	trace("Added ODP amount " + std::to_string(amount) + " for " + workingOn->getUsername());
+
+	return initialCustomerScreen();
+}
 
 
 void Controller::viewLoans()
@@ -230,7 +247,7 @@ void Controller::Loans()
 			int account = UI.selectAnAccount(workingOn);
 
 			workingOn->openLoan(workingOn->m_arr_acct[account], amount);
-			traceAndSave("new Loan; for: " + workingOn->getUsername()+"\t\t" );
+			trace("new Loan; for: " + workingOn->getUsername());
 			return initialCustomerScreen();
 		}
 		else {
@@ -248,10 +265,10 @@ void Controller::Loans()
 
 void Controller::logOut() {
 	// reset the user to null
-	traceAndSave("logging out \t\t\t");
+	trace("logging out");
 	workingOn = nullptr;
 	user = nullptr;
-	login(); // return to login screen
+	login(*this); // return to login screen
 }
 
 void Controller::viewAccounts() {
@@ -300,13 +317,13 @@ void Controller::closeAccount(Account *&account) {
 		return initialCustomerScreen();
 	}
 
-	for (int i = 0; i < workingOn->m_arr_acct.size() > i; ++i) {
+	for (int i = 0; i < workingOn->m_arr_acct.size(); ++i) {
 
 		if (workingOn->m_arr_acct[i].getActNum() == account->getActNum()) {
-			cout << "Account number: " << workingOn->m_arr_acct[i].getActNum() << " has been closed" << endl;
+			cout << "Account number " << workingOn->m_arr_acct[i].getActNum() << " has been closed" << endl;
 			UI.backToLogin();
+			trace("Closed account " + to_string(workingOn->m_arr_acct[i].getActNum()) + " for username " + workingOn->getUsername());
 			workingOn->m_arr_acct.erase(workingOn->m_arr_acct.begin() + i);
-			traceAndSave("closed account: "+ to_string(workingOn->m_arr_acct[i].getActNum()) +" for: " + workingOn->getUsername());
 		}
 
 	}
@@ -314,13 +331,14 @@ void Controller::closeAccount(Account *&account) {
 }
 
 void Controller::withdrawMoney(Account *&account) {
+	using namespace std;
 	int amount = UI.makeWithdraw();
 	int failure =account->withdraw(amount);
+	cout << "Balance: " << account->getBalance() << endl;
 
 	if (!failure) {
-		traceAndSave("Withdraw to account: "+ std::to_string(account->getActNum()) +" amount: "+ std::to_string(amount) +"$" );
+		trace("Withdrew from "+ std::to_string(account->getActNum()) +" amount: "+ std::to_string(amount) +"$" + " from username " +workingOn->getUsername() );
 	}
-	std::cout << "Balance : " << account->getBalance() << std::endl;
 
 	bool otherTransaction = UI.otherTransaction();
 
@@ -348,7 +366,7 @@ void Controller::transferMoney(Account *&account) {
 	int failure =account->transfer(other_account, amount);
 	
 	if (!failure) {
-		traceAndSave("Transfer from account: " + std::to_string(account->getActNum()) + " amount: " + std::to_string(amount) + "$ to "+ std::to_string(other_account->getActNum()));
+		trace("Transfer from account number " + std::to_string(account->getActNum()) + " amount: " + std::to_string(amount) + "$ to account number "+ std::to_string(other_account->getActNum()) + " for username "+ workingOn->getUsername());
 	}
 	std::cout << "Balance of " <<account->getActNum() <<": " << account->getBalance() << std::endl;
 	std::cout << "Balance of " << other_account->getActNum() << ": " << other_account->getBalance() << std::endl;
@@ -367,7 +385,7 @@ void Controller::makeADeposit(Account *&account) {
 	int failure =account->deposit(amount);
 	
 	if (!failure) {
-		traceAndSave("Deposit from account: " + std::to_string(account->getActNum()) + " amount: " + std::to_string(amount) + "$");
+		trace("Deposited from account number " + std::to_string(account->getActNum()) + " amount: " + std::to_string(amount) + "$" + " for username " + workingOn->getUsername());
 	}
 
 	std::cout << "Balance : " << account->getBalance() << std::endl;
@@ -421,7 +439,7 @@ void Controller::loanPayment()
 
 	int failure =workingOn->payLoan(workingOn->m_arr_acct[accountNum],amount);
 	if (!failure) {
-		traceAndSave("paid loan: "+std::to_string(amount)+"\t");
+		trace("paid loan: "+std::to_string(amount));
 	}
 	return initialCustomerScreen();
 
@@ -432,13 +450,12 @@ void Controller::saveCustomer()
 {
 	using namespace std;
 
-	fstream myFile("test.txt", fstream::out | fstream::trunc);
+	fstream myFile("test.txt", ofstream::out | ofstream::trunc);
 
 	myFile << m_trace << endl;
 
-	while (!s_customer.empty()) {
-		Customer c_temp = s_customer.front();
-		s_customer.erase(s_customer.begin());
+	for (int i = 0; i < s_customer.size(); i++) {
+		Customer c_temp = s_customer[i];
 		
 		myFile << c_temp.getUsername() << endl;
 		myFile << c_temp.getPassword() << endl;
@@ -448,12 +465,22 @@ void Controller::saveCustomer()
 
 		if (c_temp.getPermission() == Permission::CUSTOMER)
 		{
-		saveCustomerAccounts(myFile, c_temp);
+			if (c_temp.loan == nullptr) {
+				myFile << 0 << endl;
+				myFile << 0 << endl;
+				saveCustomerAccounts(myFile, c_temp);
+			}
+			else {
+				myFile << 1 << endl;
+				myFile << c_temp.loan->principal << endl;
+				saveCustomerAccounts(myFile, c_temp);
+		}
 		};
 	}
+	myFile.close();
 }
 
-void Controller::traceAndSave(std::string str)
+void Controller::trace(std::string str)
 {
 	using namespace std;
 	Date date;
@@ -464,7 +491,7 @@ void Controller::traceAndSave(std::string str)
 		return;
 	}
 
-	fstream myFile("trace.txt", ios::app);
+	fstream myFile("log.txt", ios::app);
 	
 	string permission;
 
@@ -474,8 +501,13 @@ void Controller::traceAndSave(std::string str)
 	case Permission::MANAGER: permission = "manager"; break;
 	}
 
-	myFile << user->getUsername() << "\t\t\t" <<permission<<"\t\t\t" <<str<<"\t\t\t"<<today<<"\t\t\t"<<time<< endl;
+	myFile << "User Name: "<< user->getUsername()<<endl 
+		<<"Permission: "<<permission<< endl 
+		<<"Description: "<<str<<endl
+		<<"Date and time: "<<today<<" "<<time<< "\n\n\n\n";
 
+	myFile.close();
+	saveCustomer();
 
 }
 
@@ -486,19 +518,25 @@ void Controller::saveCustomerAccounts(std::fstream & myFile, Customer & customer
 {
 	using namespace std;
 
-	// ptr to the stack
-	vector<Account> *s_acct = &customer.m_arr_acct;
+	myFile << customer.m_arr_acct.size() << endl;
 
-	//write the size of the array to the file
-	myFile << s_acct->size() << endl;
-
-	while (!s_acct->empty()) {
-		Account a_temp = s_acct->front();
-		s_acct->erase(s_acct->begin());
+	for(int i= 0; i< customer.m_arr_acct.size(); i++){
+		Account a_temp = customer.m_arr_acct[i];
 
 		myFile << static_cast<int> (a_temp.m_act_type) << endl;
 		myFile << a_temp.getActNum() << endl;
 		myFile << a_temp.getBalance() << endl;
+		/*
+		add odp
+		*/
+		if (a_temp.odp.m_amount == 0) {
+			myFile << 0 << endl;
+			myFile << 0 << endl;
+		}
+		else {
+			myFile << 1 << endl;
+			myFile << a_temp.odp.m_amount << endl;
+		}
 
 		saveCustomerTransactions(myFile, a_temp);
 
@@ -510,15 +548,10 @@ void Controller::saveCustomerTransactions(std::fstream & myFile, Account & accou
 {
 	using namespace std;
 
-	//ptr to the stack 
-	vector<Transaction> *s_transaction = &account.m_transactions;
+	myFile << account.m_transactions.size() << endl;
 
-	//write the number of transactions
-	myFile << s_transaction->size() << endl;
-
-	while (!s_transaction->empty()) {
-		Transaction t_temp = s_transaction->front();
-		s_transaction->erase(s_transaction->begin());
+		for(int i = 0; i<account.m_transactions.size(); i++){
+		Transaction t_temp = account.m_transactions[i];
 
 		myFile << t_temp.m_amount << endl;
 		myFile << static_cast<int> (t_temp.m_dr_cr) << endl;
@@ -538,8 +571,10 @@ void Controller::saveCustomerTransactions(std::fstream & myFile, Account & accou
 
 
 
-void Controller::login()
+void Controller::login(Controller &control)
 {
+
+	control.loadCustomers();
 	bool loggedIN = false;
 
 	using namespace std;
@@ -547,6 +582,11 @@ void Controller::login()
 
 	//call the login screen
 
+
+
+
+
+	while (1) {
 		UI.login(input_username, input_password);
 
 
@@ -560,14 +600,15 @@ void Controller::login()
 				user_loggedIn = input_username; // store the person who is logged in
 
 				if (user->getPermission() == Permission::CUSTOMER) {
-					workingOn= &s_customer[i];
-					traceAndSave("logged in\t\t\t");
+					workingOn = &s_customer[i];
+					trace("logged in");
 					return whatUItoDisplay();
 				}
-				traceAndSave("logged in\t\t\t");
+				trace("logged in");
 				return whatUItoDisplay();
 			}
 		}
+	}
 
 
 }
@@ -584,15 +625,16 @@ void Controller::loadCustomers()
 	Permission permission;
 	int num_accounts;
 	int next;
+	int loan;
 
 	std::vector<Account> stackAcct;
 
 
-	fstream myFile("customer.txt", fstream::in);
+	fstream myFile("test.txt", fstream::in);
 
-	if (myFile.good()) {
+	
 		myFile >> m_trace;
-	}
+	
 
 	while (myFile.good())
 	
@@ -607,9 +649,15 @@ void Controller::loadCustomers()
 		/*
 		Does the customer have a loan?
 		*/
-
-
+		
 		if (permission == Permission::CUSTOMER) {
+			myFile >> loan;
+
+				double amount;
+				myFile >> amount;
+			if (loan) {
+				customer.loan = new Loan(amount);
+			}
 			myFile >> num_accounts;// How many accounts
 			/* The next next function will load all the accounts for the customer*/
 			customer.m_arr_acct = loadAccts(myFile, num_accounts);
@@ -636,8 +684,19 @@ std::vector<Account> Controller::loadAccts(std::fstream & myFile, int arr_length
 		myFile >> act_num;
 		myFile >> balance;
 
+		double odpAmount;
+		int odp;
+
+		myFile >> odp;
+		myFile >> odpAmount;
+
+
+
 		// Create the object
 		Account account(act_num, act_type, balance);
+		if (odp) {
+			account.odp = Overdraft(odpAmount);
+		}
 
 		int arr_transactions_length;
 		//Find how many transactions
@@ -693,16 +752,15 @@ std::vector<Transaction> Controller::loadAcctsTransactions(std::fstream & myFile
 int main() {
 	using namespace std;
 	Controller control;
-	control.loadCustomers();
 
 	bool loggedIn = false;
 
 
 	//Try to log in the program
-
-		control.login();
-
-
+	
+	
+	control.login(control);
+	
 }
 
 

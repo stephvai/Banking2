@@ -3,6 +3,7 @@
 
 Customer::Customer(std::string username, std::string password, Permission permission):Login(username, password,  permission)
 {
+	//m_arr_acct.reserve(50);
 }
 
 

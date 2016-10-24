@@ -36,6 +36,7 @@ public:
 	std::string openLoan();
 	double amountOfLoan();
 	int maintenanceLoggedInScreen(int trace);
+	int addODP();
 
 };
 
