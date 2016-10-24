@@ -3,12 +3,12 @@
 #include "Loan.h"
 #pragma once
 
-class Customer :
+class User :
 	public Login
 {
 public:
-	Customer(std::string username, std::string password, Permission permission);
-	~Customer();
+	User(std::string username, std::string password, Permission permission);
+	~User();
 	std::vector<Account> m_arr_acct;
 	Loan *loan;
 	void openSavings();

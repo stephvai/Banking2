@@ -258,7 +258,7 @@ bool Interface::otherTransaction() {
 	return false;
 }
 
-bool Interface::viewAccounts(Customer *&local_user) {
+bool Interface::viewAccounts(User *&local_user) {
 	using namespace std;
 
 	Type e_accountType;
@@ -293,7 +293,7 @@ bool Interface::viewAccounts(Customer *&local_user) {
 
 }
 
-int Interface::selectAnAccount(Customer *&local_user) {
+int Interface::selectAnAccount(User *&local_user) {
 	using namespace std;
 	int input;
 	do {
@@ -304,7 +304,7 @@ int Interface::selectAnAccount(Customer *&local_user) {
 	return input;
 }
 
-std::string Interface::viewOrDoTransactions(Customer *&local_user, int accountKey){
+std::string Interface::viewOrDoTransactions(User *&local_user, int accountKey){
 	using namespace std;
 	string stringInput;
 	do {

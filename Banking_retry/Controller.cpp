@@ -97,7 +97,7 @@ void Controller::managerExistingCustomer() {
 	username = UI.existingCustomer();
 
 	bool found = false;
-	Customer *client = nullptr;
+	User *client = nullptr;
 	for (int i = 0; i < s_customer.size() && !found; ++i) {
 		client = &s_customer[i];
 		if (client->getUsername() == username) {
@@ -143,7 +143,7 @@ void Controller::managerNewCustomer() {
 	cout << "Password: ";
 	cin >> password;
 
-	Customer  c_temp(username, password, Permission::CUSTOMER);
+	User  c_temp(username, password, Permission::CUSTOMER);
 	s_customer.push_back(c_temp);
 	workingOn = &s_customer[s_customer.size() - 1];
 
@@ -450,12 +450,13 @@ void Controller::saveCustomer()
 {
 	using namespace std;
 
-	fstream myFile("test.txt", ofstream::out | ofstream::trunc);
+	fstream myFile("user.txt", ofstream::out | ofstream::trunc);
 
 	myFile << m_trace << endl;
 
 	for (int i = 0; i < s_customer.size(); i++) {
-		Customer c_temp = s_customer[i];
+
+		User c_temp = s_customer[i];
 		
 		myFile << c_temp.getUsername() << endl;
 		myFile << c_temp.getPassword() << endl;
@@ -514,7 +515,7 @@ void Controller::trace(std::string str)
 
 
 
-void Controller::saveCustomerAccounts(std::fstream & myFile, Customer & customer)
+void Controller::saveCustomerAccounts(std::fstream & myFile, User & customer)
 {
 	using namespace std;
 
@@ -628,9 +629,12 @@ void Controller::loadCustomers()
 	int loan;
 
 	std::vector<Account> stackAcct;
+	vector<User> arrayCustomer;
+
+	s_customer.clear(); // clear the vector to 0
 
 
-	fstream myFile("test.txt", fstream::in);
+	fstream myFile("user.txt", fstream::in);
 
 	
 		myFile >> m_trace;
@@ -644,7 +648,7 @@ void Controller::loadCustomers()
 		myFile >> i_permission;
 		permission = static_cast<Permission> (i_permission);
 
-		Customer customer(username, password, permission);
+		User customer(username, password, permission);
 
 		/*
 		Does the customer have a loan?
@@ -662,9 +666,10 @@ void Controller::loadCustomers()
 			/* The next next function will load all the accounts for the customer*/
 			customer.m_arr_acct = loadAccts(myFile, num_accounts);
 		}
-		s_customer.push_back(customer); // push the customer
+		arrayCustomer.push_back(customer); // push the customer onto the temp
 	}
 
+	s_customer = arrayCustomer;
 	myFile.close();
 
 }

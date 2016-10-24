@@ -1,5 +1,5 @@
 #include "Permission.h"
-#include "Customer.h"
+#include "User.h"
 #pragma once
 
 
@@ -18,9 +18,9 @@ public:
 	float howMuchToTransfer();
 	float makeADeposit();
 	bool otherTransaction();
-	bool viewAccounts(Customer *& local_user);
-	int selectAnAccount(Customer *& local_user);
-	std::string viewOrDoTransactions(Customer *& local_user, int accountKey);
+	bool viewAccounts(User *& local_user);
+	int selectAnAccount(User *& local_user);
+	std::string viewOrDoTransactions(User *& local_user, int accountKey);
 	void viewTransactions(Account *& account);
 	bool backToLogin();
 	int customerLoggedInScreen();

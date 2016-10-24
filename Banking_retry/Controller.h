@@ -1,16 +1,16 @@
 #pragma once
-#include "Customer.h"
+#include "User.h"
 #include "Interface.h"
 #include "Date.h"
 class Controller
 {
 public:
-	std::vector <Customer> s_customer; // This will hold all the customers in the program
+	std::vector <User> s_customer; // This will hold all the customers in the program
 
 	Interface UI;
 	std::string user_loggedIn;
-	Customer *user = nullptr;
-	Customer *workingOn = nullptr;
+	User *user = nullptr;
+	User *workingOn = nullptr;
 
 public:
 	Controller();
@@ -46,7 +46,7 @@ public:
 	void saveCustomer();
 	void trace(std::string str);
 private:
-	void saveCustomerAccounts(std::fstream &myFile, Customer &customer);
+	void saveCustomerAccounts(std::fstream &myFile, User &customer);
 	void saveCustomerTransactions(std::fstream &myFile, Account &account);
 	
 	/*

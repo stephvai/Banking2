@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "Customer.h"
+#include "User.h"
 
-Customer::Customer(std::string username, std::string password, Permission permission):Login(username, password,  permission)
+User::User(std::string username, std::string password, Permission permission):Login(username, password,  permission)
 {
 	//m_arr_acct.reserve(50);
 }
 
 
-Customer::~Customer()
+User::~User()
 {
 }
 
-void Customer::openSavings()
+void User::openSavings()
 {
 	//Open accounts and push them on the stack
 	Account a_temp(Type::Saving);
@@ -19,19 +19,19 @@ void Customer::openSavings()
 
 }
 
-void Customer::openChequing()
+void User::openChequing()
 {
 	//Open accounts and push them on the stack
 	Account a_temp(Type::Chequing);
 	m_arr_acct.push_back(a_temp);
 }
 
-void Customer::openLoan(Account &account, double amount)
+void User::openLoan(Account &account, double amount)
 {
 	loan = new Loan(account, amount);
 }
 
-int Customer::payLoan(Account & account, double amount)
+int User::payLoan(Account & account, double amount)
 {
 	int failure =loan->payLoan(account, amount);
 	
