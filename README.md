@@ -1,3 +1,3 @@
-# Banking2
+# Banking Simulator
 
-Banking Simulator
+
