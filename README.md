@@ -5,15 +5,18 @@ This is a bank system simulation. A client can log in to open/close unlimited am
 
 Login information:
 Customer: 
+```
 Username: joe
 password: power
-
+```
 Manager
+```
 Username: super
 password: power
-
+```
 Maintenance
+```
 Username: mechanic
 password: power
-
+```
 ![GitHub Logo](banking.gif)
